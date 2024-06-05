@@ -6,7 +6,9 @@ import models.User;
 import storage.InMemoryStorage;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class LoanService {
     private InMemoryStorage storage;
@@ -44,5 +46,15 @@ public class LoanService {
         } else {
             System.out.println("No matching loan found.");
         }
+    }
+
+    public List<Loan> getAllLoans() {
+        return storage.getLoans();
+    }
+
+    public List<Loan> getLoansByUser(User user) {
+        return storage.getLoans().stream()
+                .filter(loan -> loan.getUser().equals(user))
+                .collect(Collectors.toList());
     }
 }

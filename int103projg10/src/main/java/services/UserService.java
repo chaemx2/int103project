@@ -2,6 +2,7 @@ package services;
 
 import models.User;
 import storage.InMemoryStorage;
+
 import java.util.Optional;
 
 public class UserService {
@@ -25,15 +26,17 @@ public class UserService {
         }
     }
 
-    public void loginUser(String username, String password) {
+    public User loginUser(String username, String password) {
         Optional<User> userOpt = storage.getUsers().stream()
                 .filter(user -> user.getUsername().equals(username) && user.getPassword().equals(password))
                 .findFirst();
 
         if (userOpt.isPresent()) {
             System.out.println("Login successful!");
+            return userOpt.get();
         } else {
             System.out.println("Invalid username or password.");
+            return null;
         }
     }
 }

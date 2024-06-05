@@ -1,6 +1,7 @@
-import services.BookService;
-import services.LoanService;
-import services.UserService;
+package Library;
+
+import models.Admin;
+import services.*;
 import storage.InMemoryStorage;
 import ui.ConsoleUI;
 
@@ -10,6 +11,9 @@ public class Main {
         UserService userService = new UserService(storage);
         BookService bookService = new BookService(storage);
         LoanService loanService = new LoanService(storage);
+
+        Admin admin = new Admin("admin", "admin");
+        storage.addUser(admin);
 
         ConsoleUI ui = new ConsoleUI(userService, bookService, loanService);
         ui.start();
