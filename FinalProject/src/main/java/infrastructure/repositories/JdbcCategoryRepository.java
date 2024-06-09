@@ -28,7 +28,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     @Override
     public void save(Category category) {
-        String sql = "INSERT INTO categories(id, name) VALUES(?, ?)";
+        String sql = "REPLACE INTO categories(id, name) VALUES(?, ?)";
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, category.getId());
@@ -46,14 +46,40 @@ public class JdbcCategoryRepository implements CategoryRepository {
         try (Connection conn = DriverManager.getConnection(url, username, password);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
             while (rs.next()) {
-                categories.add(new Category(rs.getString("id"),
-                        rs.getString("name")));
+                categories.add(new Category(rs.getString("id"), rs.getString("name")));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return categories;
+    }
+
+    @Override
+    public Category findById(String id) {
+        String sql = "SELECT id, name FROM categories WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Category(rs.getString("id"), rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void delete(String id) {
+        String sql = "DELETE FROM categories WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

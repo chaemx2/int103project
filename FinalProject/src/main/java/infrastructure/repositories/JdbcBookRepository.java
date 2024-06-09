@@ -30,7 +30,7 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public void save(Book book) {
-        String sql = "INSERT INTO books(id, name, category, amount) VALUES(?, ?, ?, ?)";
+        String sql = "REPLACE INTO books(id, name, category, amount) VALUES(?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, book.getId());
@@ -82,5 +82,17 @@ public class JdbcBookRepository implements BookRepository {
             System.out.println(e.getMessage());
         }
         return books;
+    }
+
+    @Override
+    public void delete(String id) {
+        String sql = "DELETE FROM books WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
