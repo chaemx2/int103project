@@ -2,6 +2,7 @@ import application.UserService;
 import application.BookService;
 import application.BorrowService;
 import domain.User;
+import domain.User;
 import infrastructure.repositories.JdbcUserRepository;
 import infrastructure.repositories.JdbcBookRepository;
 import infrastructure.repositories.JdbcBorrowRecordRepository;
@@ -15,17 +16,18 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+
         JdbcUserRepository userRepository = new JdbcUserRepository();
         JdbcBookRepository bookRepository = new JdbcBookRepository();
         JdbcBorrowRecordRepository borrowRecordRepository = new JdbcBorrowRecordRepository();
         JdbcCategoryRepository categoryRepository = new JdbcCategoryRepository();
 
         UserService userService = new UserService(userRepository);
-        BookService bookService = new BookService(bookRepository, categoryRepository);
+        BookService bookService = new BookService(bookRepository, categoryRepository, borrowRecordRepository);
         BorrowService borrowService = new BorrowService(borrowRecordRepository);
 
         if (!userRepository.exists("admin")) {
-            userService.registerUser("admin", "admin", true);
+            userService.registerUser("admin", "admin123", true);
             System.out.println("Admin account created with username: admin and password: admin123");
         }
 
@@ -35,7 +37,7 @@ public class Main {
             System.out.println("3. Exit");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // consume newline
 
             switch (choice) {
                 case 1:

@@ -10,6 +10,14 @@ public class JdbcUserRepository implements UserRepository {
     private final String username = Config.get("db.username");
     private final String password = Config.get("db.password");
 
+    static {
+        try {
+            Class.forName(Config.get("db.driver"));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL JDBC driver not found.", e);
+        }
+    }
+
     public JdbcUserRepository() {
         try (Connection conn = DriverManager.getConnection(url, username, password)) {
             if (conn != null) {
